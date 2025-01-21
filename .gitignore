@@ -4,4 +4,4 @@ node_modules
 
 .vercel
 generate-module.ts
-src\app\scripts
+src/app/scripts
