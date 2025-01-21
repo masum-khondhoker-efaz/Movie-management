@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  fullName  String       @unique
+  email     String       @unique
+  password  String
+  role      UserRoleEnum @default(USER)
+  status    UserStatus   @default(INACTIVE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  // Relations
+  movies         Movie[]
+  ratings        Rating[]
+  reportedMovies Report[]
+
+  @@map("users")
+}
+
+model Movie {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdById String   @db.ObjectId
+  title       String
+  description String
+  releasedAt  DateTime
+  duration    Float
+  genre       String
+  language    String
+  avgRating   Float    @default(0.0)
+  totalRating Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  createdBy User     @relation(fields: [createdById], references: [id])
+  ratings   Rating[]
+  reports   Report[]
+
+  @@map("movies")
+}
+
+model Rating {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  movieId   String   @db.ObjectId
+  value     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id])
+  movie Movie @relation(fields: [movieId], references: [id])
+
+  @@map("ratings")
+}
+
+model Report {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  reportedById String       @db.ObjectId
+  reason       String
+  reportStatus ReportStatus @default(PENDING)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // Relations
+  movie      Movie  @relation(fields: [movieId], references: [id])
+  movieId    String @db.ObjectId
+  reportedBy User   @relation(fields: [reportedById], references: [id])
+
+  @@map("reports")
+}
+
+enum UserRoleEnum {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum ReportStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}

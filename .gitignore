@@ -1,0 +1,7 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+.vercel
+generate-module.ts
+src\app\scripts
