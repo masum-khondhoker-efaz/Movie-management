@@ -7,7 +7,7 @@ import { UserRoleEnum } from '@prisma/client';
 const router = express.Router();
 
 router.post(
-  '/register',
+  '/',
   validateRequest(UserValidations.registerUser),
   UserControllers.registerUser,
 );
@@ -20,11 +20,10 @@ router.get('/:id', UserControllers.getUserDetails);
 
 
 router.put(
-  '/update-profile',
+  '/',
   auth(),
   UserControllers.updateMyProfile,
 );
-
 
 
 router.put(
@@ -32,11 +31,6 @@ router.put(
   auth(),
   UserControllers.changePassword,
 );
-
-
-
-
-
 
 
 export const UserRouters = router;

@@ -4,62 +4,83 @@ import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 
 
-const createIntoDb = async (data: any) => {
-  const transaction = await prisma.$transaction(async (prisma) => {
-    const result = await prisma.movie.create({ data });
+const createMovieIntoDb = async (userId: string, data: {
+    title: string;
+    description: string;
+    releasedAt: Date;
+    language: string;
+    genre: string;
+    duration: string;
+}) => {
+    const result = await prisma.movie.create({ 
+      data : {
+        title: data.title,
+        description: data.description,
+        releasedAt: data.releasedAt,
+        language: data.language,
+        genre: data.genre,
+        duration: data.duration,
+        createdById: userId,
+      }
+      
+    });
+    if(!result){
+      throw new AppError(httpStatus.BAD_REQUEST, 'Movie not created successfully!')
+    }
     return result;
-  });
+  }
+  
 
-  return transaction;
-};
 
-const getListFromDb = async () => {
+const getMovieListFromDb = async () => {
   
     const result = await prisma.movie.findMany();
+    if(!result){
+      throw new AppError(httpStatus.NOT_FOUND, 'Movies not found.')
+    }
     return result;
 };
 
-const getByIdFromDb = async (id: string) => {
+const getMovieByIdFromDb = async (id: string) => {
   
     const result = await prisma.movie.findUnique({ where: { id } });
     if (!result) {
-      throw new Error('Movie not found');
+      throw new AppError(httpStatus.NOT_FOUND,'Movie not found');
     }
     return result;
   };
 
 
 
-const updateIntoDb = async (id: string, data: any) => {
-  const transaction = await prisma.$transaction(async (prisma) => {
+const updateMovieIntoDb = async (id: string, data: any) => {
     const result = await prisma.movie.update({
       where: { id },
       data,
     });
+    if(!result){
+      throw new AppError(httpStatus.NOT_MODIFIED,'Movie not updated successfully.')
+    }
     return result;
-  });
-
-  return transaction;
+ 
 };
 
-const deleteItemFromDb = async (id: string) => {
-  const transaction = await prisma.$transaction(async (prisma) => {
+const deleteMovieItemFromDb = async (userId: string, id: string) => {
     const deletedItem = await prisma.movie.delete({
-      where: { id },
+      where: { 
+        id: id,
+        createdById: userId
+       },
     });
 
-    // Add any additional logic if necessary, e.g., cascading deletes
     return deletedItem;
-  });
-
-  return transaction;
+  
 };
 ;
 
 export const movieService = {
-createIntoDb,
-getListFromDb,
-getByIdFromDb,
-updateIntoDb,
-deleteItemFromDb,
+createMovieIntoDb,
+getMovieListFromDb,
+getMovieByIdFromDb,
+updateMovieIntoDb,
+deleteMovieItemFromDb,
 };

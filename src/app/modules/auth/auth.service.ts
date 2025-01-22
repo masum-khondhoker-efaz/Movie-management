@@ -8,14 +8,14 @@ import prisma from '../../utils/prisma';
 
 const loginUserFromDB = async (payload: {
   email: string;
-  userName: string;
+  fullName: string;
   password: string;
 }) => {
   const userData = await prisma.user.findFirstOrThrow({
     where: {
       OR: [
         { email: payload.email },
-        { fullName: payload.userName, }
+        { fullName: payload.fullName, }
       ]
      
     },

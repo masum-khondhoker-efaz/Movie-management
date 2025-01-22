@@ -10,7 +10,11 @@ interface UserWithOptionalPassword extends Omit<User, 'password'> {
   password?: string;
 }
 
-const registerUserIntoDB = async (payload: any) => {
+const registerUserIntoDB = async (payload: {
+  email: string;
+  fullName: string;
+  password: string;
+}) => {
   if (payload.email) {
     const existingUser = await prisma.user.findFirst({
       where: {
@@ -19,7 +23,7 @@ const registerUserIntoDB = async (payload: any) => {
             email: payload.email,
           },
           {
-            fullName: payload.userName,
+            fullName: payload.fullName,
           },
         ],
       },
@@ -43,20 +47,19 @@ const registerUserIntoDB = async (payload: any) => {
   const userData = {
     ...payload,
     password: hashedPassword,
+    status: UserStatus.ACTIVE,
   };
 
-  const result = await prisma.$transaction(async (transactionClient: any) => {
-    const user = await transactionClient.user.create({
-      data: userData,
-    });
-    if (!user) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'User not created!');
-    }
-
-    const userWithoutPassword = { ...user };
-    delete userWithoutPassword.password;
-    return userWithoutPassword;
+  const user = await prisma.user.create({
+    data: userData,
   });
+  if (!user) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User not created!');
+  }
+
+  const userWithoutPassword: UserWithOptionalPassword = { ...user };
+  delete userWithoutPassword.password;
+  return userWithoutPassword;
 };
 
 const getAllUsersFromDB = async () => {
@@ -109,36 +112,20 @@ const getUserDetailsFromDB = async (id: string) => {
 };
 
 const updateMyProfileIntoDB = async (id: string, payload: any) => {
-  
   const userData = payload;
-
-  // update user data
-  await prisma.$transaction(async (transactionClient: any) => {
-    // Update user data
-    const updatedUser = await transactionClient.user.update({
-      where: { id },
-      data: userData,
-    });
-
-    if (!updatedUser) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'User not updated!');
-    }
-
-    const userWithoutPassword = { ...updatedUser };
-    delete userWithoutPassword.password;
-    return userWithoutPassword;
-
-  });
-
-  // Fetch and return the updated user including the profile
-  const updatedUser = await prisma.user.findUniqueOrThrow({
+  // Update user data
+  const updatedUser = await prisma.user.update({
     where: { id },
+    data: userData,
   });
 
-  const userWithOptionalPassword = updatedUser as UserWithOptionalPassword;
-  delete userWithOptionalPassword.password;
+  if (!updatedUser) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User not updated!');
+  }
 
-  return userWithOptionalPassword;
+  const userWithoutPassword: UserWithOptionalPassword = { ...updatedUser };
+  delete userWithoutPassword.password;
+  return userWithoutPassword;
 };
 
 const changePassword = async (user: any, payload: any) => {

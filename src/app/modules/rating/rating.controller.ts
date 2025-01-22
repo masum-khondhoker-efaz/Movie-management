@@ -4,7 +4,8 @@ import catchAsync from '../../utils/catchAsync';
 import { ratingService } from './rating.service';
 
 const createRating = catchAsync(async (req, res) => {
-  const result = await ratingService.createIntoDb(req.body);
+  const user = req.user as any;
+  const result = await ratingService.createRatingIntoDb(user.id,req.body);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     message: 'Rating created successfully',
@@ -13,7 +14,8 @@ const createRating = catchAsync(async (req, res) => {
 });
 
 const getRatingList = catchAsync(async (req, res) => {
-  const result = await ratingService.getListFromDb();
+  const user = req.user as any;
+  const result = await ratingService.getRatingListFromDb(user.id, req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Rating list retrieved successfully',
@@ -22,7 +24,7 @@ const getRatingList = catchAsync(async (req, res) => {
 });
 
 const getRatingById = catchAsync(async (req, res) => {
-  const result = await ratingService.getByIdFromDb(req.params.id);
+  const result = await ratingService.getRatingByIdFromDb(req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Rating details retrieved successfully',
@@ -31,7 +33,7 @@ const getRatingById = catchAsync(async (req, res) => {
 });
 
 const updateRating = catchAsync(async (req, res) => {
-  const result = await ratingService.updateIntoDb(req.params.id, req.body);
+  const result = await ratingService.updateRatingIntoDb(req.params.id, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Rating updated successfully',
@@ -40,7 +42,7 @@ const updateRating = catchAsync(async (req, res) => {
 });
 
 const deleteRating = catchAsync(async (req, res) => {
-  const result = await ratingService.deleteItemFromDb(req.params.id);
+  const result = await ratingService.deleteRatingItemFromDb(req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Rating deleted successfully',

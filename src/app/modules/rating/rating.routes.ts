@@ -3,19 +3,21 @@ import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { ratingController } from './rating.controller';
 import { ratingValidation } from './rating.validation';
+import { UserRoleEnum } from '@prisma/client';
 
 const router = express.Router();
 
 router.post(
 '/',
-auth(),
+auth(UserRoleEnum.USER),
 validateRequest(ratingValidation.createSchema),
 ratingController.createRating,
 );
 
-router.get('/', auth(), ratingController.getRatingList);
+router.get('/movie-ratings/:id', auth(), ratingController.getRatingList);
 
 router.get('/:id', auth(), ratingController.getRatingById);
+
 
 router.put(
 '/:id',

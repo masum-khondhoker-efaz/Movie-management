@@ -34,7 +34,7 @@ model Movie {
   title       String
   description String
   releasedAt  DateTime
-  duration    Float
+  duration    String
   genre       String
   language    String
   avgRating   Float    @default(0.0)
@@ -54,7 +54,7 @@ model Rating {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId
   movieId   String   @db.ObjectId
-  value     Int
+  rating     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

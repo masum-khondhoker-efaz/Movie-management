@@ -7,7 +7,10 @@ const loginUser = z.object({
       })
       .email({
         message: "Invalid email format!",
-      }),
+      }).optional(),
+      fullName: z.string({
+      required_error: "Full Name is required!",
+    }).optional(),
     password: z.string({
       required_error: "Password is required!",
     }),

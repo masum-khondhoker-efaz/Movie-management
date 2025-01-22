@@ -4,7 +4,8 @@ import catchAsync from '../../utils/catchAsync';
 import { movieService } from './movie.service';
 
 const createMovie = catchAsync(async (req, res) => {
-  const result = await movieService.createIntoDb(req.body);
+  const user = req.user as any;
+  const result = await movieService.createMovieIntoDb(user.id,req.body);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     message: 'Movie created successfully',
@@ -13,7 +14,7 @@ const createMovie = catchAsync(async (req, res) => {
 });
 
 const getMovieList = catchAsync(async (req, res) => {
-  const result = await movieService.getListFromDb();
+  const result = await movieService.getMovieListFromDb();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Movie list retrieved successfully',
@@ -22,7 +23,7 @@ const getMovieList = catchAsync(async (req, res) => {
 });
 
 const getMovieById = catchAsync(async (req, res) => {
-  const result = await movieService.getByIdFromDb(req.params.id);
+  const result = await movieService.getMovieByIdFromDb(req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Movie details retrieved successfully',
@@ -31,7 +32,7 @@ const getMovieById = catchAsync(async (req, res) => {
 });
 
 const updateMovie = catchAsync(async (req, res) => {
-  const result = await movieService.updateIntoDb(req.params.id, req.body);
+  const result = await movieService.updateMovieIntoDb(req.params.id, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Movie updated successfully',
@@ -40,7 +41,8 @@ const updateMovie = catchAsync(async (req, res) => {
 });
 
 const deleteMovie = catchAsync(async (req, res) => {
-  const result = await movieService.deleteItemFromDb(req.params.id);
+  const user = req.user as any;
+  const result = await movieService.deleteMovieItemFromDb(user.id,req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Movie deleted successfully',
