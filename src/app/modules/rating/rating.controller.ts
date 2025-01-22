@@ -24,7 +24,8 @@ const getRatingList = catchAsync(async (req, res) => {
 });
 
 const getRatingById = catchAsync(async (req, res) => {
-  const result = await ratingService.getRatingByIdFromDb(req.params.id);
+  const user = req.user as any;
+  const result = await ratingService.getRatingByIdFromDb(user.id, req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Rating details retrieved successfully',
@@ -33,7 +34,8 @@ const getRatingById = catchAsync(async (req, res) => {
 });
 
 const updateRating = catchAsync(async (req, res) => {
-  const result = await ratingService.updateRatingIntoDb(req.params.id, req.body);
+  const user = req.user as any;
+  const result = await ratingService.updateRatingIntoDb(user.id, req.params.id, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Rating updated successfully',
@@ -42,7 +44,8 @@ const updateRating = catchAsync(async (req, res) => {
 });
 
 const deleteRating = catchAsync(async (req, res) => {
-  const result = await ratingService.deleteRatingItemFromDb(req.params.id);
+  const user = req.user as any;
+  const result = await ratingService.deleteRatingItemFromDb(user.id, req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Rating deleted successfully',

@@ -9,8 +9,8 @@ const router = express.Router();
 
 router.post(
 '/',
-auth(UserRoleEnum.USER),
 validateRequest(movieValidation.createSchema),
+auth(UserRoleEnum.USER),
 movieController.createMovie,
 );
 
@@ -20,11 +20,11 @@ router.get('/:id', auth(), movieController.getMovieById);
 
 router.put(
 '/:id',
-auth(UserRoleEnum.USER),
 validateRequest(movieValidation.updateSchema),
+auth(UserRoleEnum.USER),
 movieController.updateMovie,
 );
 
 router.delete('/:id', auth(UserRoleEnum.USER), movieController.deleteMovie);
 
-export const movieRoutes = router;
+export const MovieRoutes = router;

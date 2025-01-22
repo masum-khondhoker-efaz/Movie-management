@@ -26,6 +26,6 @@ validateRequest(ratingValidation.updateSchema),
 ratingController.updateRating,
 );
 
-router.delete('/:id', auth(), ratingController.deleteRating);
+router.delete('/:id', auth(UserRoleEnum.USER), ratingController.deleteRating);
 
-export const ratingRoutes = router;
+export const RatingRoutes = router;

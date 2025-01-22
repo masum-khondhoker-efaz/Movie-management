@@ -7,7 +7,7 @@ import httpStatus from 'http-status';
 const createMovieIntoDb = async (userId: string, data: {
     title: string;
     description: string;
-    releasedAt: Date;
+    releasedAt: string;
     language: string;
     genre: string;
     duration: string;
@@ -16,7 +16,7 @@ const createMovieIntoDb = async (userId: string, data: {
       data : {
         title: data.title,
         description: data.description,
-        releasedAt: data.releasedAt,
+        releasedAt: new Date(data.releasedAt),
         language: data.language,
         genre: data.genre,
         duration: data.duration,

@@ -1,20 +1,21 @@
 import { z } from 'zod';
 
 const createSchema = z.object({
-
-    name: z.string().min(1, 'Name is required'),
-    description: z.string().optional(),
-
+  body: z.object({
+    reason: z.string(),
+    movieId: z.string(),
+  }),
 });
 
 const updateSchema = z.object({
-
-    name: z.string().optional(),
-    description: z.string().optional(),
-
+  body: z.object({
+    reason: z.string().optional(),
+    movieId: z.string().optional(),
+    reportStatus: z.string().optional(),
+  }),
 });
 
 export const reportValidation = {
-createSchema,
-updateSchema,
+  createSchema,
+  updateSchema,
 };
