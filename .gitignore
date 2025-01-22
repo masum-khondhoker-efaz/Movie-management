@@ -6,3 +6,4 @@ node_modules
 generate-module.ts
 src/app/scripts
 scripts
+.vercel

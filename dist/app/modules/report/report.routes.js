@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ReportRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const auth_1 = __importDefault(require("../../middlewares/auth"));
+const validateRequest_1 = __importDefault(require("../../middlewares/validateRequest"));
+const report_controller_1 = require("./report.controller");
+const report_validation_1 = require("./report.validation");
+const client_1 = require("@prisma/client");
+const router = express_1.default.Router();
+router.post('/', (0, validateRequest_1.default)(report_validation_1.reportValidation.createSchema), (0, auth_1.default)(client_1.UserRoleEnum.USER), report_controller_1.reportController.createReport);
+router.get('/', (0, auth_1.default)(client_1.UserRoleEnum.SUPER_ADMIN, client_1.UserRoleEnum.ADMIN), report_controller_1.reportController.getReportList);
+router.get('/user-reports', (0, auth_1.default)(client_1.UserRoleEnum.USER), report_controller_1.reportController.getReportListSpecificUser);
+router.get('/:id', (0, auth_1.default)(client_1.UserRoleEnum.SUPER_ADMIN, client_1.UserRoleEnum.ADMIN), report_controller_1.reportController.getReportById);
+router.put('/:id', (0, validateRequest_1.default)(report_validation_1.reportValidation.updateSchema), (0, auth_1.default)(client_1.UserRoleEnum.USER), report_controller_1.reportController.updateReport);
+router.put('/admin/:id', (0, validateRequest_1.default)(report_validation_1.reportValidation.updateSchema), (0, auth_1.default)(client_1.UserRoleEnum.SUPER_ADMIN, client_1.UserRoleEnum.ADMIN), report_controller_1.reportController.updateReportForAdmin);
+router.delete('/:id', (0, auth_1.default)(client_1.UserRoleEnum.USER), report_controller_1.reportController.deleteReport);
+exports.ReportRoutes = router;
