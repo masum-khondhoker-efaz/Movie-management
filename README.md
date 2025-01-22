@@ -16,7 +16,7 @@ This is a server-side application for managing movies, ratings, reports, and use
 1. Clone the repository:
 
 ```sh
-git clone https://github.com/your-username/movie-management-server.git
+git clone https://github.com/masum-khondhoker-efaz/Movie-management
 cd movie-management-server
 npm install
 npx prisma generate
